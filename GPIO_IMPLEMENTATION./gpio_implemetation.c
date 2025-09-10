@@ -1,32 +1,67 @@
 #include "main.h"
 
 /* USER CODE BEGIN PV */
-
 #define UH 	GPIO_PIN_8
 #define VH	GPIO_PIN_9
 #define WH	GPIO_PIN_10
 
-#define ENu GPIO_PIN_10
+
+#define ENu GPIO_PIN_10 //ORIGINAL CONFIG
 #define ENv GPIO_PIN_11
 #define ENw	GPIO_PIN_12
+
+
 
 uint8_t hall_A= 0b0;
 uint8_t hall_B= 0b0;
 uint8_t hall_C= 0b0;
+
 uint8_t hall_state = 0b111;
-uint8_t speed = 0;
+
+uint32_t mainloop = 0;
+
+uint32_t state_1 =0;
+uint32_t state_2 =0;
+uint32_t state_3 =0;
+uint32_t state_4 =0;
+uint32_t state_5 =0;
+uint32_t state_6 =0;
+
+uint8_t dir = 0;
+
+const uint8_t fr_control_lookup[7][6]  = {{0,0,0,0,0,0},
+											{0,0,1,1,0,1}, //0Z1 4
+											{0,0,1,0,1,1}, //Z01  6
+											{1,0,0,1,1,0}, //10Z 1
+											{1,0,0,1,0,1}, //1Z0 3
+											{0,1,0,0,1,1}, //Z10 2
+											{0,1,0,1,1,0} //01Z 5
+
+									}; 							  //trial 02 smooth without delay //DIR 0 NEW CODEEEE
 
 
 
-const uint8_t control_lookup[7][6] = {{0,0,0,0,0,0},
-									  {1,0,0,1,1,0},
-									  {0,1,0,0,1,1},
-									  {1,0,0,1,0,1},
-									  {0,0,1,1,0,1},
-									  {0,0,1,0,1,1},
-									  {0,1,0,1,1,0}};
+
+
+
+
+
+
+
+
+const uint8_t re_control_lookup[7][6] = {{0,0,0,0,0,0},//reset        //DIR 1
+									     {1,0,0,1,1,0},//10Z
+									     {0,1,0,0,1,1},//Z10
+									     {0,1,0,0,1,1},//01Z
+									     {0,0,1,1,0,1},//0Z1 trial 02 reverse
+									     {1,0,0,1,0,1},//1Z0
+									     {0,0,1,0,1,1},//Z01
+		                                };
+
+
 
 uint8_t control_lookup_pos = 0b000000;
+uint8_t delay = 5;
 
 
 
@@ -67,78 +102,9 @@ uint8_t control_lookup_pos = 0b000000;
 								 control_lookup[hall_state][3]<<2|control_lookup[hall_state][4]<<1|control_lookup[hall_state][5];
 
 	  	  
-
-	  // switchcase------------------------------------------------
-	  
-	  	  HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5); //LED
-
-	  	  //enable pin always  high
-	  	  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_10, SET);
-	 	  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_11, SET);
-	 	  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_12, SET);
-
-	 	  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, RESET); //PHASE
-	 	  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, RESET);
-	 	  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, RESET);
-
-	 	  switch(hall_state)
-	 	  {
-	 	      case 1:
-
-//				HAL_GPIO_WritePin(GPIOA, UH, FLOAT);
-				HAL_GPIO_WritePin(GPIOA, VH, SET);
-				HAL_GPIO_WritePin(GPIOA, WH, RESET);
-
-				HAL_GPIO_WritePin(GPIOC, ENu, RESET);
-	 	          break;
-	 	      case 2:
-				HAL_GPIO_WritePin(GPIOA, UH, SET);
-//				HAL_GPIO_WritePin(GPIOA, VH, FLOAT);
-				HAL_GPIO_WritePin(GPIOA, WH, RESET);
-
-				HAL_GPIO_WritePin(GPIOC, ENv, RESET);
-
-	 	          break;
-	 	      case 3:
-				HAL_GPIO_WritePin(GPIOA, UH, RESET);
-//				HAL_GPIO_WritePin(GPIOA, VH, FLOAT);
-				HAL_GPIO_WritePin(GPIOA, WH, SET);
-
-				HAL_GPIO_WritePin(GPIOC, ENv, RESET);
-
-	 			  break;
-	 	      case 4:
-//				HAL_GPIO_WritePin(GPIOA, UH, FLOAT);
-				HAL_GPIO_WritePin(GPIOA, VH, RESET);
-				HAL_GPIO_WritePin(GPIOA, WH, SET);
-
-				HAL_GPIO_WritePin(GPIOC, ENu, RESET);
-
-	 			  break;
-
-	 	      case 5:
-				HAL_GPIO_WritePin(GPIOA, UH, RESET);
-				HAL_GPIO_WritePin(GPIOA, VH, SET);
-//				HAL_GPIO_WritePin(GPIOA, WH, FLOAT);
-
-				HAL_GPIO_WritePin(GPIOC, ENw, RESET);
-
-	 			  break;
-
-	 	      case 6:
-				HAL_GPIO_WritePin(GPIOA, UH, SET);
-				HAL_GPIO_WritePin(GPIOA, VH, RESET);
-//				HAL_GPIO_WritePin(GPIOA, WH, FLOAT);
-
-				HAL_GPIO_WritePin(GPIOC, ENw, RESET);
-	 			  break;
-	 	      default:
-	 	    	  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, RESET); //PHASE
-	 	    	  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, RESET);
-	 	    	  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, RESET);
-
-	 	  }
   }
+	  
+	  	
 
 
 
