@@ -1,17 +1,21 @@
 #include "main.h"
 
 /* USER CODE BEGIN PV */
+
 #define UH 	GPIO_PIN_8
 #define VH	GPIO_PIN_9
 #define WH	GPIO_PIN_10
 
-#define ENu GPIO_PIN_10 //ORIGINAL CONFIG
+
+
+#define ENu GPIO_PIN_10
 #define ENv GPIO_PIN_11
 #define ENw	GPIO_PIN_12
 
 uint8_t hall_A= 0b0;
 uint8_t hall_B= 0b0;
 uint8_t hall_C= 0b0;
+
 
 uint8_t hall_state = 0b111;
 
@@ -48,10 +52,13 @@ const uint8_t re_control_lookup[7][6] = {{0,0,0,0,0,0},//reset        //DIR 1
 uint8_t control_lookup_pos = 0b000000;
 uint8_t delay = 0;
 
+
+
 /* USER CODE END PV */
 
  while (1)
   {
+
 		    state_1 += (hall_state == 1) ? 1 : 0;
 			state_2 += (hall_state == 2) ? 1 : 0;
 			state_3 += (hall_state == 3) ? 1 : 0;
@@ -95,6 +102,7 @@ uint8_t delay = 0;
   }
 	  
 	  	
+
 
 
 
